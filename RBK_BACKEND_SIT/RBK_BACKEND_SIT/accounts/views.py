@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from .serializers import CustomUserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-
+from rest_framework import generics, permissions
 
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]
@@ -18,6 +18,15 @@ class CustomUserCreate(APIView):
                 json = serializer.data
                 return Response(json, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# ---------- an a ccount to get user Profile -------------#
+class UserAPI(generics.RetrieveAPIView): 
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class= CustomUserSerializer
+    def get_object(self):
+        return self.request.user
 
 
 # class BlacklistTokenUpdateView(APIView):
