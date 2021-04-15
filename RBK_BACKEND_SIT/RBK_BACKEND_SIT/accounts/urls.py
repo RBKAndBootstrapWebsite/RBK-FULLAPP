@@ -4,6 +4,6 @@ from .api import getUserData_view
 
 app_name='accounts'
 urlpatterns = [
-    path('register/',CustomUserCreate.as_view(), name='create_user'),
+    path('register/',CustomUserCreate.as_view(), name='createuser'),
     path('getInfo/',getUserData_view, name='getUerData'),
 ]
