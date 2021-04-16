@@ -15,19 +15,18 @@ import itertools
 
 @csrf_exempt
 @api_view(['POST', ])
-def getUserData_view(request):
+def getStudentCohortWeeks_view(request):
     permission_classes = (permissions.IsAuthenticated,)
- 
-
     try:
-        if request.data["email"]:
+        if request.data["cohort"]:
             cursor = connection.cursor()
-            cursor.execute('''SELECT * 
-            FROM rbkbackend.accounts_newuser
-            join rbkbackend.cohort_user 
-            on newuser_id = accounts_newuser.id 
-            where accounts_newuser.email=%s ;
-            ''',[request.data['email']])
+            cursor.execute('''SELECT * , rbkbackend.weeks.id, rbkbackend.weeks.text
+            FROM rbkbackend.weeks
+            left join rbkbackend.activestatus 
+            on rbkbackend.activestatus.week_id=rbkbackend.weeks.id 
+            where cohort_id= %s 
+            and rbkbackend.activestatus.weekisActive = true
+            ''',[request.data['cohort']])
 
             desc = cursor.description
             print(desc)
@@ -36,9 +35,8 @@ def getUserData_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
+            return Response({"ServerError":"DataNot Found"})
     except NewUser.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"ServerError":"DataNot Found"})
 
     
