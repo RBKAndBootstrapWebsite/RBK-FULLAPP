@@ -20,13 +20,17 @@ def getStudentCohortWeeks_view(request):
     try:
         if request.data["cohort"]:
             cursor = connection.cursor()
-            cursor.execute('''SELECT * , rbkbackend.weeks.id, rbkbackend.weeks.text
+            cursor.execute('''SELECT DISTINCT 
+             rbkbackend.weeks.id,
+            rbkbackend.weeks.text,
+            rbkbackend.activestatus.week_id,
+            rbkbackend.activestatus.weekisActive,
+            rbkbackend.activestatus.cohort_id
             FROM rbkbackend.weeks
             left join rbkbackend.activestatus 
             on rbkbackend.activestatus.week_id=rbkbackend.weeks.id 
-            where cohort_id= %s 
-            and rbkbackend.activestatus.weekisActive = true
-            ''',[request.data['cohort']])
+            where rbkbackend.activestatus.cohort_id =%s;
+            ''',[int(request.data['cohort'])])
 
             desc = cursor.description
             print(desc)
