@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Subject
-from .serializers import SubjectSerializer
+from .serlializer import SubjectSerializer
 from rest_framework import viewsets
 
 

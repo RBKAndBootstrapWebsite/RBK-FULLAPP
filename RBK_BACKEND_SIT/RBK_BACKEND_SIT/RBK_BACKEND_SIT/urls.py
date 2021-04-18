@@ -27,10 +27,14 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path("", views.catchall),
-    path('login/', views.catchall),
+    # path("/", views.catchall),
+    path('login', views.catchall),
+    path('logout',views.catchall ),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/users/', include('accounts.urls', namespace="accounts")),
+    path('api/subjects/',include('subjects.urls' ,namespace="subjects")),
+    path('api/days/', include('days.urls', namespace="days")),
     path('api/weeks/', include('week.urls', namespace="weeks")),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -12,25 +12,33 @@ import json
 from rest_framework.permissions import AllowAny
 from django.core.serializers.json import DjangoJSONEncoder
 import itertools
+from http import HTTPStatus
 
 @csrf_exempt
 @api_view(['POST', ])
-def getStudentCohortWeeks_view(request):
+def getStudentCohortSubhectsdaysOfTheWeek_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
         if request.data["cohort"]:
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
-             rbkbackend.weeks.id,
-            rbkbackend.weeks.text,
-            rbkbackend.activestatus.week_id,
-            rbkbackend.activestatus.weekisActive,
-            rbkbackend.activestatus.cohort_id
-            FROM rbkbackend.weeks
+			 rbkbackend.subjects.id,
+             rbkbackend.subjects.title,
+             rbkbackend.subjects.los,
+             rbkbackend.subjects.part,
+             rbkbackend.activestatus.week_id,
+             rbkbackend.activestatus.day_id,
+             rbkbackend.activestatus.dayisActive,
+             rbkbackend.activestatus.cohort_id
+            FROM rbkbackend.subjects
             left join rbkbackend.activestatus 
-            on rbkbackend.activestatus.week_id=rbkbackend.weeks.id 
+            on  rbkbackend.activestatus.subject_id = rbkbackend.subjects.id
+            and rbkbackend.activestatus.day_id =rbkbackend.subjects.day_id
+            and rbkbackend.activestatus.week_id =rbkbackend.subjects.week_id
             where rbkbackend.activestatus.cohort_id =%s
-            and rbkbackend.activestatus.weekisActive= true;
+            and rbkbackend.activestatus.dayisActive= true  
+            and rbkbackend.activestatus.weekisActive=true 
+            and rbkbackend.activestatus.subjectActive=true
             ''',[int(request.data['cohort'])])
 
             desc = cursor.description
@@ -40,8 +48,11 @@ def getStudentCohortWeeks_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-            return Response({"ServerError":"DataNot Found"})
-    except NewUser.DoesNotExist:
-        return Response({"ServerError":"DataNot Found"})
+             return Response(status=HTTPStatus.BAD_REQUEST)
 
+    except NewUser.DoesNotExist:
+        return Response(status=HTTPStatus.BAD_REQUEST)
+
+    return Response(status=HTTPStatus.FORBIDDEN)
+    
     

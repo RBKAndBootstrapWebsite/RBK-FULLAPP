@@ -12,25 +12,26 @@ import json
 from rest_framework.permissions import AllowAny
 from django.core.serializers.json import DjangoJSONEncoder
 import itertools
+from http import HTTPStatus
 
 @csrf_exempt
 @api_view(['POST', ])
-def getStudentCohortWeeks_view(request):
+def getStudentCohortdaysOfTheWeek_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
         if request.data["cohort"]:
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
-             rbkbackend.weeks.id,
-            rbkbackend.weeks.text,
+			rbkbackend.days.id,
+            rbkbackend.days.text,
             rbkbackend.activestatus.week_id,
-            rbkbackend.activestatus.weekisActive,
+             rbkbackend.activestatus.day_id,
+             rbkbackend.activestatus.dayisActive,
             rbkbackend.activestatus.cohort_id
-            FROM rbkbackend.weeks
+            FROM rbkbackend.days
             left join rbkbackend.activestatus 
-            on rbkbackend.activestatus.week_id=rbkbackend.weeks.id 
-            where rbkbackend.activestatus.cohort_id =%s
-            and rbkbackend.activestatus.weekisActive= true;
+            on rbkbackend.activestatus.week_id=rbkbackend.days.week_id and  rbkbackend.activestatus.day_id =rbkbackend.days.id
+            where rbkbackend.activestatus.cohort_id = and rbkbackend.activestatus.dayisActive= true  and rbkbackend.activestatus.weekisActive=true
             ''',[int(request.data['cohort'])])
 
             desc = cursor.description
@@ -40,8 +41,11 @@ def getStudentCohortWeeks_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-            return Response({"ServerError":"DataNot Found"})
-    except NewUser.DoesNotExist:
-        return Response({"ServerError":"DataNot Found"})
+             return Response(status=HTTPStatus.BAD_REQUEST)
 
+    except NewUser.DoesNotExist:
+        return Response(status=HTTPStatus.BAD_REQUEST)
+
+    return Response(status=HTTPStatus.FORBIDDEN)
+    
     
