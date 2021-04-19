@@ -20,6 +20,8 @@ def getStudentCohortdaysOfTheWeek_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
         if request.data["cohort"]:
+            print(request.data["cohort"])
+            print("----------------------------------")
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
 			rbkbackend.days.id,
@@ -31,7 +33,7 @@ def getStudentCohortdaysOfTheWeek_view(request):
             FROM rbkbackend.days
             left join rbkbackend.activestatus 
             on rbkbackend.activestatus.week_id=rbkbackend.days.week_id and  rbkbackend.activestatus.day_id =rbkbackend.days.id
-            where rbkbackend.activestatus.cohort_id = and rbkbackend.activestatus.dayisActive= true  and rbkbackend.activestatus.weekisActive=true
+            where rbkbackend.activestatus.cohort_id =%s and rbkbackend.activestatus.dayisActive= true  and rbkbackend.activestatus.weekisActive=true
             ''',[int(request.data['cohort'])])
 
             desc = cursor.description
