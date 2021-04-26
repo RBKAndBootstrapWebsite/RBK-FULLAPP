@@ -16,17 +16,14 @@ from http import HTTPStatus
 
 @csrf_exempt
 @api_view(['POST', ])
-def getAllSubjectsExrsize(request):
-
-    print(request.data)
+def getAllSubjectsLectures(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
-        if request.data["subjectList"] and request.data["is_staff"]:
+        if request.data["subjectList"]  and request.data["is_staff"]:
             cursor = connection.cursor()
-            cursor.execute('''SELECT * 
-            FROM rbkbackend.exercises
-            where rbkbackend.exercises.subject_id
-            in %s;
+            cursor.execute('''SELECT *
+            FROM rbkbackend.lectures 
+            where lectures.subject_id in %s;
 
             ''',[request.data['subjectList']])
 
@@ -38,9 +35,9 @@ def getAllSubjectsExrsize(request):
             return Response(data)
         else:
             cursor = connection.cursor()
-            cursor.execute('''SELECT * 
-            FROM rbkbackend.exercises
-            where rbkbackend.exercises.subject_id;
+            cursor.execute('''SELECT *
+            FROM rbkbackend.lectures 
+            where lectures.subject_id ;
             ''')
 
             desc = cursor.description

@@ -33,6 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
    
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/lectures/', include('lectures.urls', namespace="lectures")),
     path('api/users/', include('accounts.urls', namespace="accounts")),
     path("api/exercises/",include('exercises.urls', namespace="exercises")),
     path('api/subjects/',include('subjects.urls' ,namespace="subjects")),

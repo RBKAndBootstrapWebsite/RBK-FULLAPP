@@ -5,14 +5,15 @@ from subjects.models import Subject
 
 
 class LectureAdmin(admin.ModelAdmin):
-    list_display = ('content', "subject")
+    list_display = ('title', "url",'subject')
 
 
 class Lecture(models.Model):
     class Meta:
         db_table = "lectures"
-    content = models.TextField(default='', blank=False)
+    title = models.TextField(default='', blank=False)
+    url = models.TextField(default='', blank=False)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.content
+        return self.title
