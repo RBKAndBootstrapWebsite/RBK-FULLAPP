@@ -19,7 +19,7 @@ from http import HTTPStatus
 def getStudentCohortSubhectsdaysOfTheWeek_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
-        if request.data["cohort"]:
+        if request.data["cohort"] and not request.data["is_staff"]:
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
 			 rbkbackend.subjects.id,
@@ -49,7 +49,30 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-             return Response(status=HTTPStatus.BAD_REQUEST)
+            cursor = connection.cursor()
+            cursor.execute('''SELECT DISTINCT 
+			 rbkbackend.subjects.id,
+             rbkbackend.subjects.title,
+             rbkbackend.subjects.los,
+             rbkbackend.subjects.learningObjective,
+             rbkbackend.subjects.part,
+             rbkbackend.activestatus.week_id,
+             rbkbackend.activestatus.day_id,
+             rbkbackend.activestatus.dayisActive,
+             rbkbackend.activestatus.cohort_id
+            FROM rbkbackend.subjects
+            left join rbkbackend.activestatus 
+            on  rbkbackend.activestatus.subject_id = rbkbackend.subjects.id
+            where rbkbackend.activestatus.cohort_id =%s
+            
+            ''',[int(request.data['cohort'])])
+
+            desc = cursor.description
+            print(desc)
+            column_names = [col[0] for col in desc]
+            data = [dict(zip(column_names, row))
+                for row in cursor.fetchall()]
+            return Response(data)
 
     except NewUser.DoesNotExist:
         return Response(status=HTTPStatus.BAD_REQUEST)

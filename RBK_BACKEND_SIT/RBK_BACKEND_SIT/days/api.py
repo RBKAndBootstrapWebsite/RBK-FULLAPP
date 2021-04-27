@@ -19,9 +19,9 @@ from http import HTTPStatus
 def getStudentCohortdaysOfTheWeek_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
-        if request.data["cohort"]:
+        if request.data["cohort"] and not request.data["is_staff"]:
             print(request.data["cohort"])
-            print("----------------------------------")
+         
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
 			rbkbackend.days.id,
@@ -43,7 +43,26 @@ def getStudentCohortdaysOfTheWeek_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-             return Response(status=HTTPStatus.BAD_REQUEST)
+            cursor = connection.cursor()
+            cursor.execute('''SELECT DISTINCT 
+			rbkbackend.days.id,
+            rbkbackend.days.text,
+            rbkbackend.activestatus.week_id,
+             rbkbackend.activestatus.day_id,
+             rbkbackend.activestatus.dayisActive,
+            rbkbackend.activestatus.cohort_id
+            FROM rbkbackend.days
+            left join rbkbackend.activestatus 
+            on rbkbackend.activestatus.week_id=rbkbackend.days.week_id 
+            where rbkbackend.activestatus.cohort_id =%s ''',
+            [int(request.data['cohort'])])
+
+            desc = cursor.description
+            print(desc)
+            column_names = [col[0] for col in desc]
+            data = [dict(zip(column_names, row))
+                for row in cursor.fetchall()]
+            return Response(data)
 
     except NewUser.DoesNotExist:
         return Response(status=HTTPStatus.BAD_REQUEST)
