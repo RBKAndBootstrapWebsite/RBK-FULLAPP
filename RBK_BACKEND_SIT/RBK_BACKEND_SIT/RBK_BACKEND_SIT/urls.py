@@ -29,6 +29,7 @@ urlpatterns = [
     path("", views.catchall),
     # path("/", views.catchall),
     path('login', views.catchall),
+    path('login/', views.catchall),
     path('logout',views.catchall ),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
