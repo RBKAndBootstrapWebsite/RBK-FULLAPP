@@ -18,7 +18,7 @@ import itertools
 def getStudentCohortWeeks_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
-        if request.data["cohort"]:
+        if request.data["cohort"] and not request.data["is_staff"]:
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
              rbkbackend.weeks.id,
@@ -40,7 +40,24 @@ def getStudentCohortWeeks_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-            return Response({"ServerError":"DataNot Found"})
+            cursor = connection.cursor()
+            cursor.execute('''SELECT DISTINCT 
+            rbkbackend.weeks.id,
+            rbkbackend.weeks.text,
+            rbkbackend.activestatus.week_id,
+            rbkbackend.activestatus.weekisActive,
+            rbkbackend.activestatus.cohort_id
+            FROM rbkbackend.weeks
+            left join rbkbackend.activestatus 
+            on rbkbackend.activestatus.week_id=rbkbackend.weeks.id 
+            ''')
+
+            desc = cursor.description
+            print(desc)
+            column_names = [col[0] for col in desc]
+            data = [dict(zip(column_names, row))
+                for row in cursor.fetchall()]
+            return Response(data)
     except NewUser.DoesNotExist:
         return Response({"ServerError":"DataNot Found"})
 

@@ -31,8 +31,8 @@ urlpatterns = [
     path('login', views.catchall),
     path('logout',views.catchall ),
     path('admin/', admin.site.urls),
-   
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/resources/', include('resources.urls', namespace="resources")),
     path('api/lectures/', include('lectures.urls', namespace="lectures")),
     path('api/users/', include('accounts.urls', namespace="accounts")),
     path("api/exercises/",include('exercises.urls', namespace="exercises")),
