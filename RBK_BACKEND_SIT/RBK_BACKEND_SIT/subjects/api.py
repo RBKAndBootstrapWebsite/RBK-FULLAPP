@@ -25,6 +25,7 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
 			 rbkbackend.subjects.id,
              rbkbackend.subjects.title,
              rbkbackend.subjects.los,
+             rbkbackend.subjects.learningObjective,
              rbkbackend.subjects.part,
              rbkbackend.activestatus.week_id,
              rbkbackend.activestatus.day_id,

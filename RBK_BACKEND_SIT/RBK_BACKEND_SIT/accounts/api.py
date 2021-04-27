@@ -49,6 +49,8 @@ def getUserData_view(request):
             return Response(status=HTTPStatus.BAD_REQUEST)
 
     except NewUser.DoesNotExist:
-        return Response(status=HTTPStatus.FORBIDDEN)
+        return Response(status=HTTPStatus.BAD_REQUEST)
+
+    return Response(status=HTTPStatus.FORBIDDEN)
 
     

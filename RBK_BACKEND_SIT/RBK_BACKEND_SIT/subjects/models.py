@@ -18,6 +18,7 @@ class Subject(models.Model):
     week = models.ForeignKey(Week, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
     part = models.IntegerField(default=0)
+    learningObjective=models.TextField(default='', blank=False)
     # status = models.BooleanField(default=False)
     los = models.TextField(default='', blank=False)
 
