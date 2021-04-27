@@ -12,8 +12,7 @@ from subjects.models import Subject
 
 
 class ActiveState(models.Model):
-    class Meta:
-        db_table = "activestatus"
+  
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
     week = models.ForeignKey(Week, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
@@ -21,6 +20,9 @@ class ActiveState(models.Model):
     weekisActive = models.BooleanField(default=False)
     subjectActive = models.BooleanField(default=False)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    class Meta:
+        db_table = "activestatus"
+        unique_together = ('subject', 'day','week','cohort')
 
 
    
