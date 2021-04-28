@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-
+from .models import Day
 from django.db import connection
 from django.http import JsonResponse
 from django.core import serializers
@@ -69,4 +69,57 @@ def getStudentCohortdaysOfTheWeek_view(request):
 
     return Response(status=HTTPStatus.FORBIDDEN)
     
+
+
+@csrf_exempt
+@api_view(['POST', ])
+def ChangeDaysVisibility_view(request):
+    permission_classes = (permissions.IsAuthenticated,)
+    try:
+   
+        print(request.data["day"], request.data["dayisActive"])
+        cursor = connection.cursor()
+        cursor.execute('''SELECT  
+            rbkbackend.subjects.day_id,
+            rbkbackend.subjects.id as subject , 
+            rbkbackend.subjects.week_id
+            from rbkbackend.subjects 
+            where rbkbackend.subjects.day_id =%s
+            ''',[int(request.data["day"])])
+
+
+        desc = cursor.description
+        column_names = [col[0] for col in desc]
+        data = [dict(zip(column_names, row))
+            for row in cursor.fetchall()]
+
+        print(data)
+
+        for sub in data :
+            print(sub)
+            try:
+                cursor = connection.cursor()
+                cursor.execute('''INSERT INTO activestatus
+                (cohort_id, day_id, subject_id, week_id,dayisActive)
+                VALUES
+                (%s, %s, %s, %s ,%s)
+                ON DUPLICATE KEY UPDATE
+                dayisActive =%s
+                '''
+                ,[request.data["cohort"]
+                ,sub['day_id'],
+                sub['subject'],
+                sub['week_id'], 
+                request.data["dayisActive"],
+                request.data["dayisActive"]
+                ])
+            
+            except Day.DoesNotExist:
+                return Response({"ServerError":"DataNot Found"})
+        return Response({"day":request.data["day"],
+                 "dayisActive":request.data["dayisActive"]})
+            
     
+          
+    except Day.DoesNotExist: 
+        return Response({"ServerError":"DataNot Found"})
