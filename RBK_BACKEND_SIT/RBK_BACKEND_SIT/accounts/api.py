@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-
+from http import HTTPStatus
 from django.db import connection
 from django.http import JsonResponse
 from django.core import serializers
@@ -16,12 +16,23 @@ import itertools
 @csrf_exempt
 @api_view(['POST', ])
 def getUserData_view(request):
-    permission_classes = AllowAny
+    permission_classes = (permissions.IsAuthenticated,)
+ 
 
     try:
         if request.data["email"]:
             cursor = connection.cursor()
-            cursor.execute('''SELECT * 
+            cursor.execute('''SELECT 
+            rbkbackend.accounts_newuser.Last_name, 
+            rbkbackend.cohort_user.cohort_id,
+            rbkbackend.accounts_newuser.email,
+            rbkbackend.accounts_newuser.first_name,
+            rbkbackend.accounts_newuser.id,
+            rbkbackend.accounts_newuser.is_active,
+            rbkbackend.accounts_newuser.is_staff,
+            rbkbackend.accounts_newuser.is_superuser,
+            rbkbackend.accounts_newuser.id,
+            rbkbackend.accounts_newuser.user_name
             FROM rbkbackend.accounts_newuser
             join rbkbackend.cohort_user 
             on newuser_id = accounts_newuser.id 
@@ -35,9 +46,11 @@ def getUserData_view(request):
                 for row in cursor.fetchall()]
             return Response(data)
         else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=HTTPStatus.BAD_REQUEST)
 
     except NewUser.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=HTTPStatus.BAD_REQUEST)
+
+    return Response(status=HTTPStatus.FORBIDDEN)
 
     
