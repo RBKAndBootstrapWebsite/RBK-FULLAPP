@@ -7,11 +7,12 @@ from django.db import models
 
 class UserAdminConfig(UserAdmin):
     model = NewUser
+    search_fields = ('email', 'user_name', 'first_name',)
     list_display =('email','id','user_name','is_active', 'first_name','is_staff','Last_name')
     ordering = ('-id',)
     fieldsets = (
         (None, {'fields': ('email', 'user_name', 'first_name',)}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active','is_superuser')}),
         
     )
     add_fieldsets = (
