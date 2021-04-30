@@ -19,9 +19,9 @@ from http import HTTPStatus
 def getStudentCohortdaysOfTheWeek_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
-        if request.data["cohort"] and not request.data["is_staff"]:
+        if request.data["cohort"] and  request.data["is_staff"] != 1:
             print(request.data["cohort"])
-         
+            print("33333333333333333333333333333333333")
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
 			rbkbackend.days.id,

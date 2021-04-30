@@ -18,6 +18,7 @@ from django.urls import path , re_path
 from django.conf.urls import url, include
 from . import views
 
+from django.contrib.auth import  views as auth_views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,11 +28,12 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path("", views.catchall),
-    # path("/", views.catchall),
+ 
     path('login', views.catchall),
     path('login/', views.catchall),
     path('logout',views.catchall ),
     path('admin/', admin.site.urls),
+
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/resources/', include('resources.urls', namespace="resources")),
     path('api/lectures/', include('lectures.urls', namespace="lectures")),
@@ -42,6 +44,7 @@ urlpatterns = [
     path('api/weeks/', include('week.urls', namespace="weeks")),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path("/", views.catchall),
     
 ]
 

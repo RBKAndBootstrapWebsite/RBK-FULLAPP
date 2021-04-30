@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-
+from .models import Subject
 from django.db import connection
 from django.http import JsonResponse
 from django.core import serializers
@@ -29,7 +29,7 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
              rbkbackend.subjects.part,
              rbkbackend.activestatus.week_id,
              rbkbackend.activestatus.day_id,
-             rbkbackend.activestatus.dayisActive,
+             rbkbackend.activestatus.subjectActive,
              rbkbackend.activestatus.cohort_id
             FROM rbkbackend.subjects
             left join rbkbackend.activestatus 
@@ -58,7 +58,7 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
              rbkbackend.subjects.part,
              rbkbackend.activestatus.week_id,
              rbkbackend.activestatus.day_id,
-             rbkbackend.activestatus.dayisActive,
+             rbkbackend.activestatus.subjectActive,
              rbkbackend.activestatus.cohort_id
             FROM rbkbackend.subjects
             left join rbkbackend.activestatus 
@@ -79,4 +79,35 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
 
     return Response(status=HTTPStatus.FORBIDDEN)
     
+
+
+
+@csrf_exempt
+@api_view(['POST', ])
+def ChangeSubjectVisibility_view(request):
+    permission_classes = (permissions.IsAuthenticated,)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('''INSERT INTO activestatus
+        (cohort_id, day_id, subject_id, week_id,subjectActive)
+         VALUES
+         (%s, %s, %s, %s ,%s)
+         ON DUPLICATE KEY UPDATE
+        subjectActive =%s
+                '''
+        ,[request.data["cohort"],
+        request.data['day_id'],
+        request.data['id'],
+        request.data['week_id'], 
+        request.data["subjectActive"],
+        request.data["subjectActive"],
+        ])
+            
+    except Subject.DoesNotExist:
+            return Response({"ServerError":"DataNot Found"})
+    return Response({"sub":request.data['id'],
+                 "subjectActive":request.data["subjectActive"]})
+            
     
+          
+  
