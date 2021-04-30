@@ -20,6 +20,7 @@ class BasicRequirement(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     mark = models.IntegerField(default=0)
     notes = models.TextField(default='', blank=False)
+    note2 = models.TextField(default='', blank=False)
 
     def __str__(self):
         return self.student_name
