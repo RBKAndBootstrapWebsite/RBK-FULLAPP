@@ -17,12 +17,12 @@ class Warmups(models.Model):
         db_table = "Warmups"
     student_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="studentname+")
     staff_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name=" staffname+")
-    cohort = models.ManyToManyField(Cohort)
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
     week = models.ForeignKey(Week, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
-    title=models.TextField(default='NotSolved', blank=False)
+    # title=models.TextField(default='NotSolved', blank=False)
     mark = models.TextField(default='NotSolved', blank=False)
     notes = models.TextField(default='', blank=False)
 
     def __str__(self):
-        return self.title
+        return self.mark

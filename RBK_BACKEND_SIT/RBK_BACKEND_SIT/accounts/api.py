@@ -53,4 +53,30 @@ def getUserData_view(request):
 
     return Response(status=HTTPStatus.FORBIDDEN)
 
-    
+@csrf_exempt
+@api_view(['POST', ])
+def getStudentsData_view(request):
+    permission_classes = (permissions.IsAuthenticated,)
+ 
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute('''SELECT 
+        CONCAT(first_name , " ",Last_name) as fullName,
+        rbkbackend.accounts_newuser.id 
+        FROM rbkbackend.accounts_newuser 
+        inner join
+        rbkbackend.cohort_user 
+        on rbkbackend.accounts_newuser.id = rbkbackend.cohort_user.newuser_id 
+        where rbkbackend.cohort_user.cohort_id =%s 
+        and rbkbackend.accounts_newuser.is_staff=0;
+            ''',[request.data['cohort_id']])
+
+        desc = cursor.description
+        print(desc)
+        column_names = [col[0] for col in desc]
+        data = [dict(zip(column_names, row))
+                for row in cursor.fetchall()]
+        return Response(data)
+    except :
+        return Response({'data':[]})
