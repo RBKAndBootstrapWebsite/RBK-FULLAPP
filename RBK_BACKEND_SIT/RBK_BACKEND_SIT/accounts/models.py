@@ -42,7 +42,6 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150, blank=True)
     Last_name = models.CharField(max_length=150, blank=True)
     start_date = models.DateTimeField(default=timezone.now)
-    # userType = models.ForeignKey(AccountType, on_delete=models.CASCADE, null=True )
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
@@ -55,17 +54,3 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
         return self.user_name
 
 
-# class AccountAdmin(admin.ModelAdmin):
-#     list_display = ('name', "email", "password", "userType")
-
-# class Account(models.Model):
-#     class Meta:
-#         db_table = "accounts"
-#     name = models.TextField(default='', blank=False)
-#     email = models.CharField(max_length=255, default='', blank=False)
-#     password = models.CharField(max_length=50, default='', blank=False)
-#     userType = models.ForeignKey(AccountType, on_delete=models.CASCADE, null=True )
-#     # Owner = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE , null = False)
-
-#     def __str__(self):
-#         return self.name

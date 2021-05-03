@@ -13,8 +13,7 @@ class WarmupsAdmin(admin.ModelAdmin):
 
 
 class Warmups(models.Model):
-    class Meta:
-        db_table = "Warmups"
+  
     student_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="studentname+")
     staff_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name=" staffname+")
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
@@ -23,6 +22,10 @@ class Warmups(models.Model):
     # title=models.TextField(default='NotSolved', blank=False)
     mark = models.TextField(default='NotSolved', blank=False)
     notes = models.TextField(default='', blank=False)
+
+    class Meta:
+        db_table = "Warmups"
+        unique_together = ('student_name', 'cohort','week','day')
 
     def __str__(self):
         return self.mark

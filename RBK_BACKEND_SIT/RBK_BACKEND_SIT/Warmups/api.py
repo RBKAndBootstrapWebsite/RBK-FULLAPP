@@ -16,6 +16,67 @@ from http import HTTPStatus
 from rest_framework.exceptions import ValidationError, ParseError
 
 
+# --------------------- Delete WarmUps ----------------------------#
+
+@csrf_exempt
+@api_view(['POST', ])
+def DeleteWarmUps_view(request):
+    print(request.data["ArrayOfWarmUpsIds"])
+    permission_classes = (permissions.IsAuthenticated,)
+
+    if request.data['is_staff'] ==0:
+        return Response(status=HTTPStatus.BAD_REQUEST)
+    else:
+        try:
+    
+            cursor = connection.cursor()
+            cursor.execute('''DELETE FROM rbkbackend.warmups
+                WHERE rbkbackend.warmups.id in (%s)
+                    ''',[request.data["ArrayOfWarmUpsIds"]])
+
+            desc = cursor.description
+
+            print(desc)
+            print("--------------------------------------")
+
+            return Response(request.data["ArrayOfWarmUpsIds"])
+        except :
+            return Response(status=HTTPStatus.BAD_REQUEST)
+
+
+# --------------------- Update WarmUps ----------------------------#
+
+@csrf_exempt
+@api_view(['POST', ])
+def UpdateWarmUps_view(request):
+    # print(request.data["ArrayOfWarmUpsIds"])
+    permission_classes = (permissions.IsAuthenticated,)
+
+    if request.data['is_staff'] ==0:
+        return Response(status=HTTPStatus.BAD_REQUEST)
+    else :
+        try:
+    
+            cursor = connection.cursor()
+            cursor.execute('''UPDATE rbkbackend.warmups
+                SET
+            mark = %s,
+            notes = %s
+            WHERE id = %s; 
+            ''',[request.data["mark"],request.data["notes"],request.data["id"]])
+
+            desc = cursor.description
+
+            print(desc)
+            print("--------------------------------------")
+
+            return Response({"mark":request.data["mark"],"notes":request.data["mark"],"id":request.data["id"]})
+        except :
+            return Response(status=HTTPStatus.BAD_REQUEST)
+
+    
+
+
 @csrf_exempt
 @api_view(['POST', ])
 def getAllWarmUps_view(request):

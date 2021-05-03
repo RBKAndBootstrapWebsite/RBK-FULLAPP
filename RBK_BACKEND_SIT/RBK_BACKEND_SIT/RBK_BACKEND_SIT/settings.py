@@ -25,7 +25,7 @@ FRONTEND_DIR = os.path.abspath(
     os.path.join(BACKEND_DIR, '../../', 'RBK-Frontend-Student'))
 
 # modify the definition of DEBUG and ALLOWED_HOSTS
-DEBUG = os.environ.get('DJANGO_ENV') == 'development'
+# DEBUG = os.environ.get('DJANGO_ENV') == 'development'
 ALLOWED_HOSTS = ['*']
 
 # Quick-start development settings - unsuitable for production
