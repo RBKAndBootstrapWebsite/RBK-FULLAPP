@@ -40,7 +40,6 @@ def getUserData_view(request):
             ''',[request.data['email']])
 
             desc = cursor.description
-            print(desc)
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
@@ -73,7 +72,6 @@ def getStudentsData_view(request):
             ''',[request.data['cohort_id']])
 
         desc = cursor.description
-        print(desc)
         column_names = [col[0] for col in desc]
         data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]

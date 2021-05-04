@@ -20,8 +20,50 @@ from rest_framework.exceptions import ValidationError, ParseError
 
 @csrf_exempt
 @api_view(['POST', ])
+def SaveWarmUps_view(request):
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    if request.data['is_staff'] ==0:
+        return Response(status=HTTPStatus.HTTP_406_NOT_ACCEPTABLE)
+    else:
+        try:
+            cursor = connection.cursor()
+            cursor.execute('''INSERT INTO rbkbackend.warmups
+                    (mark,notes,day_id,staff_name_id,student_name_id,week_id,cohort_id)
+                    VALUES 
+                    ( %s, %s, %s, %s, %s, %s, %s);''',
+                    [
+                    request.data["mark"],
+                    request.data["notes"],
+                    request.data["day_id"],
+                    request.data["staff_id"],
+                    request.data["student_id"],
+                    request.data["week_id"],
+                    request.data["cohort_id"],
+                    ])
+
+            desc = cursor.description
+            return Response({
+               "mark": request.data["mark"],
+                "notes":   request.data["notes"],
+                "day_id":  request.data["day_id"],
+                "staff_id":  request.data["staff_id"],
+                "student_id":  request.data["student_id"],
+                "week_id": request.data["week_id"],
+                "cohort_id": request.data["cohort_id"]
+            })
+        except :
+            return Response(status=HTTPStatus.BAD_REQUEST)
+
+
+
+# --------------------- Delete WarmUps ----------------------------#
+
+@csrf_exempt
+@api_view(['POST', ])
 def DeleteWarmUps_view(request):
-    print(request.data["ArrayOfWarmUpsIds"])
+
     permission_classes = (permissions.IsAuthenticated,)
 
     if request.data['is_staff'] ==0:
@@ -35,10 +77,6 @@ def DeleteWarmUps_view(request):
                     ''',[request.data["ArrayOfWarmUpsIds"]])
 
             desc = cursor.description
-
-            print(desc)
-            print("--------------------------------------")
-
             return Response(request.data["ArrayOfWarmUpsIds"])
         except :
             return Response(status=HTTPStatus.BAD_REQUEST)
@@ -49,7 +87,6 @@ def DeleteWarmUps_view(request):
 @csrf_exempt
 @api_view(['POST', ])
 def UpdateWarmUps_view(request):
-    # print(request.data["ArrayOfWarmUpsIds"])
     permission_classes = (permissions.IsAuthenticated,)
 
     if request.data['is_staff'] ==0:
@@ -66,10 +103,6 @@ def UpdateWarmUps_view(request):
             ''',[request.data["mark"],request.data["notes"],request.data["id"]])
 
             desc = cursor.description
-
-            print(desc)
-            print("--------------------------------------")
-
             return Response({"mark":request.data["mark"],"notes":request.data["mark"],"id":request.data["id"]})
         except :
             return Response(status=HTTPStatus.BAD_REQUEST)
@@ -80,7 +113,7 @@ def UpdateWarmUps_view(request):
 @csrf_exempt
 @api_view(['POST', ])
 def getAllWarmUps_view(request):
-    print(request.data["is_staff"])
+   
     permission_classes = (permissions.IsAuthenticated,)
     try:
         if request.data["cohort_id"] :
@@ -109,7 +142,6 @@ def getAllWarmUps_view(request):
             ''',[int(request.data['cohort_id']),])
 
             desc = cursor.description
-            print(desc)
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]

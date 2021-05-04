@@ -35,7 +35,7 @@ def getStudentCohortWeeks_view(request):
             ''',[int(request.data['cohort'])])
 
             desc = cursor.description
-            print(desc)
+          
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
@@ -69,7 +69,7 @@ def ChangeWeekVisibility_view(request):
     permission_classes = (permissions.IsAuthenticated,)
     try:
    
-        print(request.data["week"], request.data["weekisActive"])
+        
         cursor = connection.cursor()
         cursor.execute('''SELECT  
             rbkbackend.subjects.day_id,
@@ -90,10 +90,10 @@ def ChangeWeekVisibility_view(request):
         data = [dict(zip(column_names, row))
             for row in cursor.fetchall()]
 
-        print(data)
+      
 
         for sub in data :
-            print(sub)
+            
             try:
                 cursor = connection.cursor()
                 cursor.execute('''INSERT INTO activestatus

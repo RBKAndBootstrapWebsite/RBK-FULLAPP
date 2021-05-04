@@ -27,7 +27,6 @@ def getAllSubjectResources(request):
             ''',[request.data['subjectList']])
 
             desc = cursor.description
-            print(desc)
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
@@ -39,7 +38,6 @@ def getAllSubjectResources(request):
             ''')
 
             desc = cursor.description
-            print(desc)
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]

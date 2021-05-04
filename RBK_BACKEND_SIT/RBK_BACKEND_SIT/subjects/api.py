@@ -43,7 +43,7 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
             ''',[int(request.data['cohort'])])
 
             desc = cursor.description
-            print(desc)
+       
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
@@ -68,7 +68,7 @@ def getStudentCohortSubhectsdaysOfTheWeek_view(request):
             ''',[int(request.data['cohort'])])
 
             desc = cursor.description
-            print(desc)
+        
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
