@@ -14,7 +14,7 @@ class AssessmentAdmin(admin.ModelAdmin):
 
 class Assessment(models.Model):
     class Meta:
-        db_table = "Assessments"
+        db_table = "assessments"
     student_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="studentname+")
     staff_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name=" staffname+")
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)

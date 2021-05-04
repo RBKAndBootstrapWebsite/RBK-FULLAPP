@@ -13,7 +13,7 @@ class BasicRequirementAdmin(admin.ModelAdmin):
 
 class BasicRequirement(models.Model):
     class Meta:
-        db_table = "BasicRequirements"
+        db_table = "basicRequirements"
     student_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="studentname+")
     staff_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name=" staffname+")
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)

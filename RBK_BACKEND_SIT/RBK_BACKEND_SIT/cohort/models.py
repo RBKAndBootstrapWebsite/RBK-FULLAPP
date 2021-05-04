@@ -16,7 +16,7 @@ from django.conf import settings
 
 class Cohort(models.Model):
     class Meta:
-        db_table = "Cohort"
+        db_table = "cohort"
     name = models.TextField(default='', blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ManyToManyField(settings.AUTH_USER_MODEL)

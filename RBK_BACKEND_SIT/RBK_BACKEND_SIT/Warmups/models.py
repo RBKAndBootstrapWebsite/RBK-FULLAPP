@@ -24,7 +24,7 @@ class Warmups(models.Model):
     notes = models.TextField(default='', blank=False)
 
     class Meta:
-        db_table = "Warmups"
+        db_table = "warmups"
         unique_together = ('student_name', 'cohort','week','day')
 
     def __str__(self):
