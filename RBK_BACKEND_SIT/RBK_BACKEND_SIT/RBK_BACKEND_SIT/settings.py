@@ -114,28 +114,28 @@ WSGI_APPLICATION = 'RBK_BACKEND_SIT.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.NewUser'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rbkbackend',
-        'USER':'root',
-        'PASSWORD':'1111',
-        'HOST': 'localhost' ,# 'localhost' db,#,
-        'PORT':'3306'
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'rbkbackend',
-#         'USER': 'admin',
-#         'PASSWORD': '123456789',
-#         'HOST': 'rbkbackend.cxyljpc9qidl.us-east-2.rds.amazonaws.com',
-#         'PORT': '3306',
+#         'USER':'root',
+#         'PASSWORD':'1111',
+#         'HOST': 'localhost' ,# 'localhost' db,#,
+#         'PORT':'3306'
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'rbkbackend',
+        'USER': 'admin',
+        'PASSWORD': '123456789',
+        'HOST': 'rbkbackend.cxyljpc9qidl.us-east-2.rds.amazonaws.com',
+        'PORT': '3306',
+    }
+}
 
 
 # Password validation

@@ -5,7 +5,9 @@ from rest_framework.views import APIView
 from .serializers import CustomUserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions 
+from rest_framework.exceptions import AuthenticationFailed
+
 
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]
@@ -30,10 +32,15 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+
+        if not user :
+            raise AuthenticationFailed('Invalid credentials , try Again')
         return Response({
             "user":UserSerializer(user, context=self.get_serializer_context).data,
             "token":AuthToken.objects.create(user)[1]
         })
+
+        
 
 
 # class BlacklistTokenUpdateView(APIView):
