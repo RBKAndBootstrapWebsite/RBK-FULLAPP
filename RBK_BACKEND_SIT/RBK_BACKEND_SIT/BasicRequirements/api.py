@@ -29,30 +29,43 @@ def SaveBasicRequirement_view(request):
     else:
         try:
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO rbkbackend.assessments
-                    (refactored,mark,comments,cohort_id,staff_name_id,student_name_id,week_id)
+            cursor.execute('''INSERT INTO rbkbackend.basicrequirements
+                    (mark,
+                    notes,
+                    cohort_id,
+                    staff_name_id,
+                    student_name_id
+                    ,subject_id,
+                     note2)
                     VALUES 
-                    ( %s, %s, %s, %s, %s, %s,%s);''',
+                    ( %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)''',
                     [
-                    request.data["refactored"],
                     request.data["mark"],
-                    request.data["comments"],
+                    request.data["notes"],
                     request.data["cohort_id"],
                     request.data["staff_name_id"],
                     request.data["student_name_id"],
-                    request.data["week_id"],
+                    request.data["subject_id"],
+                    request.data["note2"],
                     ])
 
             desc = cursor.description
             print(cursor.description)
             return Response({
-               "refactored": request.data["refactored"],
+               
                 "mark":    request.data["mark"],
-                "comments":  request.data["comments"],
+                "notes":  request.data["notes"],
                 "cohort_id":  request.data["cohort_id"],
                 "staff_name_id": request.data["staff_name_id"],
                 "student_name_id": request.data["student_name_id"],
-                "week_id": request.data["week_id"]
+                "subject_id": request.data["subject_id"],
+                "note2":request.data["note2"]
             })
         except :
             return Response(status=HTTPStatus.BAD_REQUEST)
