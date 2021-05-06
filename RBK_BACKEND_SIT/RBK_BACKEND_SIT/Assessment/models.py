@@ -13,8 +13,7 @@ class AssessmentAdmin(admin.ModelAdmin):
 
 
 class Assessment(models.Model):
-    class Meta:
-        db_table = "assessments"
+   
     student_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="studentname+")
     staff_name = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name=" staffname+")
     cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
@@ -22,7 +21,10 @@ class Assessment(models.Model):
     refactored = models.BooleanField(default=False)
     mark = models.IntegerField(default=0)
     comments = models.TextField(default='', blank=False)
+    class Meta:
+        db_table = "assessments"
+        unique_together = ('student_name', 'cohort','week')
 
     def __str__(self):
-        return self.student_name
+        return self.comments
 

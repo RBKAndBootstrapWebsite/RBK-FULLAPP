@@ -59,8 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-
     'accounts',
     'week',
     'days',
@@ -114,28 +112,28 @@ WSGI_APPLICATION = 'RBK_BACKEND_SIT.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.NewUser'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'rbkbackend',
-#         'USER':'root',
-#         'PASSWORD':'1111',
-#         'HOST': 'localhost' ,# 'localhost' db,#,
-#         'PORT':'3306'
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'rbkbackend',
-        'USER': 'admin',
-        'PASSWORD': '123456789',
-        'HOST': 'rbkbackend.cxyljpc9qidl.us-east-2.rds.amazonaws.com',
-        'PORT': '3306',
+        'USER':'root',
+        'PASSWORD':'1111',
+        'HOST': 'localhost' ,# 'localhost' db,#,
+        'PORT':'3306'
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'rbkbackend',
+#         'USER': 'admin',
+#         'PASSWORD': '123456789',
+#         'HOST': 'rbkbackend.cxyljpc9qidl.us-east-2.rds.amazonaws.com',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
@@ -188,7 +186,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=3600),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -211,6 +209,6 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=30),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=1),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
