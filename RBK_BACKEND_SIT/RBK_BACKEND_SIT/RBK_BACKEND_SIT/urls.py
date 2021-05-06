@@ -34,6 +34,7 @@ urlpatterns = [
     path('logout',views.catchall ),
     path('api/Assessment/',include('Assessment.urls')),
     path('admin/', admin.site.urls),
+     path('api/BasicRequirements/',include('BasicRequirements.urls')),
     path('api/Warmups/',include('Warmups.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/resources/', include('resources.urls', namespace="resources")),
