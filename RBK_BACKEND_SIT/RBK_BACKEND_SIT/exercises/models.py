@@ -16,9 +16,9 @@ class Exercise(models.Model):
     question = models.TextField(default='', blank=False)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     level = models.IntegerField(default=0)
-    signture = models.TextField(default='', blank=False)
+    signture = models.TextField(default='', blank=True)
     order = models.IntegerField(default=0)
-    hint = models.TextField(default='', blank=False)
+    hint = models.TextField(default='', blank=True)
 
     # class ExerciseAdmin(admin.ModelAdmin):
 

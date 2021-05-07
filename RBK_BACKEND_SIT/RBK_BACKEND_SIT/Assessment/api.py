@@ -130,8 +130,8 @@ def getAllAssessment_view(request):
             rbkbackend.assessments.refactored,
             rbkbackend.assessments.mark,
             rbkbackend.weeks.text as weektitle,
-            g.first_name as staff_name,
-            d.first_name as student_name 
+            concat( g.first_name ," " ,g.Last_name) as staff_name,
+            concat( d.first_name," " ,d.Last_name) as student_name 
             FROM rbkbackend.assessments
             right join rbkbackend.cohort on rbkbackend.assessments.cohort_id = rbkbackend.cohort.id
             right join rbkbackend.weeks on rbkbackend.weeks.id = rbkbackend.assessments.week_id
