@@ -48,13 +48,11 @@ def getStudentCohortWeeks_view(request):
             cursor.execute('''SELECT DISTINCT 
             rbkbackend.weeks.id,
             rbkbackend.weeks.text,
-            rbkbackend.activestatus.week_id,
+            rbkbackend.weeks.id as week_id,
             rbkbackend.activestatus.weekisActive,
             rbkbackend.activestatus.cohort_id
-            FROM rbkbackend.weeks
-            join rbkbackend.activestatus 
-            on rbkbackend.activestatus.week_id=rbkbackend.weeks.id
-             where rbkbackend.activestatus.cohort_id=%s
+            FROM rbkbackend.weeks , rbkbackend.activestatus
+            where rbkbackend.activestatus.cohort_id=%s
             ''',[request.data['cohort']])
 
             desc = cursor.description
@@ -64,53 +62,54 @@ def getStudentCohortWeeks_view(request):
                 for row in cursor.fetchall()]
             
             if(not data): 
-               
+              
     #  we need to select all subject and insert it to the active status
                 cursor2 = connection.cursor()  
-                cursor2.execute('''SELECT 
-                    rbkbackend.subjects.id  , 
-                    rbkbackend.subjects.week_id,
-                    rbkbackend.subjects.day_id
-                    from rbkbackend.subjects 
-                    where rbkbackend.subjects.week_id
-                    in (select rbkbackend.weeks.id from weeks )
-                    ''')  
+                cursor2.execute('''SELECT  
+                    rbkbackend.weeks.id,
+                    rbkbackend.weeks.text,
+                    concat(%s) as cohort_id,
+                    concat(null) as weekisActive,
+                    rbkbackend.weeks.id as week_id
+                    FROM rbkbackend.weeks
+                    ''',[request.data['cohort']])  
                 desc2 = cursor2.description
                 column_names2 = [col[0] for col in desc2]
                 data2 = [dict(zip(column_names2, row))
                     for row in cursor2.fetchall()]
-               
-                for row in data2 :
-                    cursor.execute('''INSERT INTO rbkbackend.activestatus    
-                        (cohort_id,day_id,subject_id,week_id)
-                         VALUES (%s ,%s, %s, %s)
-                         ''',[request.data['cohort'],
-                         row['day_id'],
-                         row['id'],
-                         row['week_id']
-                    ]) 
+                print(data2)
+                return Response(data2)
+                # for row in data2 :
+                #     cursor.execute('''INSERT INTO rbkbackend.activestatus    
+                #         (cohort_id,day_id,subject_id,week_id)
+                #          VALUES (%s ,%s, %s, %s)
+                #          ''',[request.data['cohort'],
+                #          row['day_id'],
+                #          row['id'],
+                #          row['week_id']
+                #     ]) 
 
-    #  --------------- after insert we get all needed data ----------------3
-                cursor = connection.cursor()
-                cursor.execute('''SELECT DISTINCT 
-                rbkbackend.weeks.id,
-                rbkbackend.weeks.text,
-                rbkbackend.activestatus.week_id,
-                rbkbackend.activestatus.weekisActive,
-                rbkbackend.activestatus.cohort_id
-                FROM rbkbackend.weeks
-                join rbkbackend.activestatus 
-                on rbkbackend.activestatus.week_id=rbkbackend.weeks.id
-                where rbkbackend.activestatus.cohort_id=%s
-                ''',[request.data['cohort']])
+    # #  --------------- after insert we get all needed data ----------------3
+    #             cursor = connection.cursor()
+    #             cursor.execute('''SELECT DISTINCT 
+    #             rbkbackend.weeks.id,
+    #             rbkbackend.weeks.text,
+    #             rbkbackend.activestatus.week_id,
+    #             rbkbackend.activestatus.weekisActive,
+    #             rbkbackend.activestatus.cohort_id
+    #             FROM rbkbackend.weeks
+    #             join rbkbackend.activestatus 
+    #             on rbkbackend.activestatus.week_id=rbkbackend.weeks.id
+    #             where rbkbackend.activestatus.cohort_id=%s
+    #             ''',[request.data['cohort']])
 
-                desc = cursor.description
-                # print( desc)
-                column_names = [col[0] for col in desc]
-                data = [dict(zip(column_names, row))
-                    for row in cursor.fetchall()] 
+    #             desc = cursor.description
+    #             # print( desc)
+    #             column_names = [col[0] for col in desc]
+    #             data = [dict(zip(column_names, row))
+    #                 for row in cursor.fetchall()] 
 
-                return Response(data)
+                
         return Response(data)
     except Week.DoesNotExist:
         return Response({"ServerError":"DataNot Found"})
