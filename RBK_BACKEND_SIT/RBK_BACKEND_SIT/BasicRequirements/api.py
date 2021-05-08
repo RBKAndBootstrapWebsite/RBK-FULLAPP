@@ -29,7 +29,7 @@ def SaveBasicRequirement_view(request):
     else:
         try:
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO rbkbackend.basicrequirements
+            cursor.execute('''INSERT INTO rbkbackend.basicrquirements
                     (mark,
                     notes,
                     cohort_id,
@@ -86,8 +86,8 @@ def DeleteBasicRequirement_view(request):
         try:
     
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM rbkbackend.basicrequirements
-                WHERE rbkbackend.basicrequirements.id in (%s)
+            cursor.execute('''DELETE FROM rbkbackend.basicrquirements
+                WHERE rbkbackend.basicrquirements.id in (%s)
                     ''',[request.data["ArrayOfWarmUpsIds"]])
 
             desc = cursor.description
@@ -109,7 +109,7 @@ def UpdateBasicRequirement_view(request):
         try:
     
             cursor = connection.cursor()
-            cursor.execute('''UPDATE rbkbackend.basicrequirements
+            cursor.execute('''UPDATE rbkbackend.basicrquirements
             SET
             mark = %s,
             notes = %s,
@@ -141,22 +141,22 @@ def getAllBasicRequirments_view(request):
         if request.data["cohort_id"] :
             cursor = connection.cursor()
             cursor.execute('''SELECT 
-            rbkbackend.basicrequirements.id,
+            rbkbackend.basicrquirements.id,
             rbkbackend.cohort.name as cohort_name,
-            rbkbackend.basicrequirements.notes,
-            rbkbackend.basicrequirements.note2,
-            rbkbackend.basicrequirements.mark,
+            rbkbackend.basicrquirements.notes,
+            rbkbackend.basicrquirements.note2,
+            rbkbackend.basicrquirements.mark,
             concat(g.first_name , " ", g.Last_name) as staff_name,
             concat(d.first_name , " ", d.Last_name) as student_name ,
 			v.title as subject
-            FROM rbkbackend.basicrequirements
-            right join rbkbackend.cohort on rbkbackend.basicrequirements.cohort_id = rbkbackend.cohort.id
-            right join rbkbackend.accounts_newuser  as g on g.id = rbkbackend.basicrequirements.staff_name_id
-            right join rbkbackend.accounts_newuser as d on d.id = rbkbackend.basicrequirements.student_name_id
-            right join rbkbackend.subjects as v on v.id = rbkbackend.basicrequirements.subject_id
-            where rbkbackend.basicrequirements.cohort_id=%s
+            FROM rbkbackend.basicrquirements
+            right join rbkbackend.cohort on rbkbackend.basicrquirements.cohort_id = rbkbackend.cohort.id
+            right join rbkbackend.accounts_newuser  as g on g.id = rbkbackend.basicrquirements.staff_name_id
+            right join rbkbackend.accounts_newuser as d on d.id = rbkbackend.basicrquirements.student_name_id
+            right join rbkbackend.subjects as v on v.id = rbkbackend.basicrquirements.subject_id
+            where rbkbackend.basicrquirements.cohort_id=%s
             order by 
-            rbkbackend.basicrequirements.student_name_id ASC, rbkbackend.basicrequirements.subject_id ;    
+            rbkbackend.basicrquirements.student_name_id ASC, rbkbackend.basicrquirements.subject_id ;    
             ''',[int(request.data['cohort_id']),])
 
             desc = cursor.description

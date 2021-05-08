@@ -23,7 +23,7 @@ class BasicRequirement(models.Model):
 
     class Meta:
         db_table = "basicrquirements"
-        unique_together = ('student_name', 'staff_name','cohort','subject')
+        unique_together = ('student_name', 'cohort','subject')
 
     def __str__(self):
         return self.notes

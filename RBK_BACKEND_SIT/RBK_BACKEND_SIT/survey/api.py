@@ -19,7 +19,7 @@ from rest_framework.exceptions import ValidationError, ParseError
 
 @csrf_exempt
 @api_view(['POST', ])
-def SaveBasicRequirement_view(request):
+def SaveSurvays_view(request):
 
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -28,43 +28,32 @@ def SaveBasicRequirement_view(request):
     else:
         try:
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO rbkbackend.basicrequirements
-                    (mark,
-                    notes,
-                    cohort_id,
-                    staff_name_id,
-                    student_name_id
-                    ,subject_id,
-                     note2)
-                    VALUES 
-                    ( %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s)''',
+            cursor.execute('''INSERT INTO rbkbackend.survey
+                            (id
+                            title,
+                            description,
+                            url)
+                            VALUES
+                            (max())
+                            ''',
                     [
-                    request.data["mark"],
-                    request.data["notes"],
-                    request.data["cohort_id"],
-                    request.data["staff_name_id"],
-                    request.data["student_name_id"],
-                    request.data["subject_id"],
-                    request.data["note2"],
+                        
+                    request.data["title"],
+                    request.data["description"],
+                    request.data["url"],
                     ])
+
+            cursor.execute('''SELECT LAST_INSERT_ID()''')
+            print( desc = cursor.description)    
 
             desc = cursor.description
             print(cursor.description)
             return Response({
                
-                "mark":    request.data["mark"],
-                "notes":  request.data["notes"],
-                "cohort_id":  request.data["cohort_id"],
-                "staff_name_id": request.data["staff_name_id"],
-                "student_name_id": request.data["student_name_id"],
-                "subject_id": request.data["subject_id"],
-                "note2":request.data["note2"]
+                "mark":    request.data["title"],
+                "notes":  request.data["description"],
+                "cohort_id":  request.data["url"],
+            
             })
         except :
             return Response(status=HTTPStatus.BAD_REQUEST)
@@ -75,22 +64,31 @@ def SaveBasicRequirement_view(request):
 
 @csrf_exempt
 @api_view(['POST', ])
-def DeleteBasicRequirement_view(request):
+def DeleteSurvy_view(request):
 
+    print(request.data["id"])
+
+    print(request.data["cohort_id"])
     permission_classes = (permissions.IsAuthenticated,)
 
     if request.data['is_staff'] ==0:
-        return Response(status=HTTPStatus.BAD_REQUEST)
+        return Response(status=HTTPStatus.HTTP_406_NOT_ACCEPTABLE)
     else:
         try:
     
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM rbkbackend.basicrequirements
-                WHERE rbkbackend.basicrequirements.id in (%s)
-                    ''',[request.data["ArrayOfWarmUpsIds"]])
+            cursor.execute('''DELETE FROM 
+            rbkbackend.survey_cohort
+            WHERE rbkbackend.survey_cohort.cohort_id=%s
+            and rbkbackend.survey_cohort.survey_id =%s
+            ''',
+            [
+            request.data["cohort_id"],
+            request.data["id"]
+            ])
 
-            desc = cursor.description
-            return Response(request.data["ArrayOfWarmUpsIds"])
+          
+            return Response(request.data["id"])
         except :
             return Response(status=HTTPStatus.BAD_REQUEST)
 
@@ -99,7 +97,7 @@ def DeleteBasicRequirement_view(request):
 
 @csrf_exempt
 @api_view(['POST', ])
-def UpdateBasicRequirement_view(request):
+def UpdateSurvys_view(request):
     permission_classes = (permissions.IsAuthenticated,)
 
     if request.data['is_staff'] ==0:
@@ -108,23 +106,22 @@ def UpdateBasicRequirement_view(request):
         try:
     
             cursor = connection.cursor()
-            cursor.execute('''UPDATE rbkbackend.basicrequirements
+            cursor.execute('''UPDATE rbkbackend.survey
             SET
-            mark = %s,
-            notes = %s,
-            note2=%s
-            WHERE id = %s; 
-            ''',[
-            request.data["mark"],
-            request.data["notes"],
-            request.data["note2"],
+            title = %s,
+            description = %s,
+            url = %s
+            WHERE id =%s; ''',[
+            request.data["title"],
+            request.data["description"],
+            request.data["url"],
             request.data["id"]])
 
             desc = cursor.description
-            return Response({"mark":request.data["mark"],
-                        "comments":request.data["notes"],
-                        "refactored":request.data["note2"],
-                        "id":request.data["id"]})
+            return Response({"id":request.data["id"],
+                        "title":request.data["title"],
+                        "description":request.data["description"],
+                        "url":request.data["url"]})
         except :
             return Response(status=HTTPStatus.BAD_REQUEST)
 
