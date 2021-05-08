@@ -22,8 +22,8 @@ def getUserData_view(request):
     try:
         if request.data["email"]:
             cursor = connection.cursor()
-            cursor.execute('''SELECT 
-            rbkbackend.accounts_newuser.Last_name, 
+            cursor.execute('''SELECT DISTINCT
+            CONCAT(first_name , " ",Last_name) as user_name,
             rbkbackend.cohort_user.cohort_id,
             rbkbackend.accounts_newuser.email,
             rbkbackend.accounts_newuser.first_name,
@@ -32,10 +32,12 @@ def getUserData_view(request):
             rbkbackend.accounts_newuser.is_staff,
             rbkbackend.accounts_newuser.is_superuser,
             rbkbackend.accounts_newuser.id,
-            rbkbackend.accounts_newuser.user_name
+            rbkbackend.cohort_user.cohort_id,
+            rbkbackend.cohort.name
             FROM rbkbackend.accounts_newuser
-            join rbkbackend.cohort_user 
-            on newuser_id = accounts_newuser.id 
+             join rbkbackend.cohort_user 
+            on newuser_id = accounts_newuser.id
+             join rbkbackend.cohort  on rbkbackend.cohort.id  = rbkbackend.cohort_user.cohort_id
             where accounts_newuser.email=%s ;
             ''',[request.data['email']])
 
