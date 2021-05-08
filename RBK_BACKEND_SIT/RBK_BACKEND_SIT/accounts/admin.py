@@ -7,7 +7,7 @@ from django.db import models
 
 class UserAdminConfig(UserAdmin):
     model = NewUser
-    search_fields = ('email', 'user_name', 'first_name',)
+    search_fields = ('email', 'user_name', 'first_name','email')
     list_display =('email','id','user_name','is_active', 'first_name','is_staff','Last_name')
     ordering = ('-id',)
     fieldsets = (

@@ -29,30 +29,34 @@ def SaveSurvays_view(request):
         try:
             cursor = connection.cursor()
             cursor.execute('''INSERT INTO rbkbackend.survey
-                            (id
-                            title,
-                            description,
-                            url)
-                            VALUES
-                            (max())
-                            ''',
-                    [
-                        
-                    request.data["title"],
+                ( title, description, url)
+                VALUES
+                (%s, %s,%s )
+                ''',[request.data["title"],
                     request.data["description"],
                     request.data["url"],
                     ])
-
-            cursor.execute('''SELECT LAST_INSERT_ID()''')
-            print( desc = cursor.description)    
-
+            cursor.execute('''SELECT survey.id
+            FROM rbkbackend.survey 
+            ORDER BY id DESC LIMIT 1;''')
+             
             desc = cursor.description
-            print(cursor.description)
+            column_names = [col[0] for col in desc]
+            retureneddata = [dict(zip(column_names, row))
+                for row in cursor.fetchall()]
+            print(retureneddata)
+
+            cursor = connection.cursor()
+            cursor.execute('''INSERT INTO rbkbackend.survey_cohort
+                    (survey_id, cohort_id)
+                    VALUES  (%s, %s ) ''', [   
+                    retureneddata[0]["id"],
+                    request.data["cohort_id"], ])
             return Response({
-               
-                "mark":    request.data["title"],
-                "notes":  request.data["description"],
-                "cohort_id":  request.data["url"],
+               "id":retureneddata[0]["id"],
+                "title":    request.data["title"],
+                "description":  request.data["description"],
+                "url":  request.data["url"],
             
             })
         except :
