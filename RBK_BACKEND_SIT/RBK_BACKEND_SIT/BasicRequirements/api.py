@@ -56,7 +56,7 @@ def SaveBasicRequirement_view(request):
                     ])
 
             desc = cursor.description
-            print(cursor.description)
+            
             return Response({
                
                 "mark":    request.data["mark"],

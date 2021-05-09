@@ -18,11 +18,11 @@ import itertools
 @api_view(['POST', ])
 def getStudentCohortWeeks_view(request):
 
-    print(request.data["cohort"] and not request.data["is_staff"])
+    
     permission_classes = (permissions.IsAuthenticated,)
     try:
         if request.data["cohort"] and not request.data["is_staff"]:
-            print("111111111111111111111111")
+           
             cursor = connection.cursor()
             cursor.execute('''SELECT DISTINCT 
              rbkbackend.weeks.id,
@@ -58,7 +58,7 @@ def getStudentCohortWeeks_view(request):
             ''',[request.data['cohort']])
 
             desc = cursor.description
-            # print( desc)
+
             column_names = [col[0] for col in desc]
             data = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
@@ -105,7 +105,7 @@ def getStudentCohortWeeks_view(request):
                 ''',[request.data['cohort']])
 
                 desc = cursor.description
-                # print( desc)
+               
                 column_names = [col[0] for col in desc]
                 data = [dict(zip(column_names, row))
                     for row in cursor.fetchall()] 

@@ -44,7 +44,7 @@ def SaveSurvays_view(request):
             column_names = [col[0] for col in desc]
             retureneddata = [dict(zip(column_names, row))
                 for row in cursor.fetchall()]
-            print(retureneddata)
+           
 
             cursor = connection.cursor()
             cursor.execute('''INSERT INTO rbkbackend.survey_cohort
@@ -70,9 +70,6 @@ def SaveSurvays_view(request):
 @api_view(['POST', ])
 def DeleteSurvy_view(request):
 
-    print(request.data["id"])
-
-    print(request.data["cohort_id"])
     permission_classes = (permissions.IsAuthenticated,)
 
     if request.data['is_staff'] ==0:

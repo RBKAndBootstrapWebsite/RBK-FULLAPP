@@ -44,7 +44,7 @@ def SaveAssessment_view(request):
                     ])
 
             desc = cursor.description
-            print(cursor.description)
+            
             return Response({
                "refactored": request.data["refactored"],
                 "mark":    request.data["mark"],
